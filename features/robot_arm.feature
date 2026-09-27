@@ -1,3 +1,4 @@
+@2dof
 Feature: 2-DOF Robot Arm Motion Control
 
   Scenario Outline: Joint position commands move the robot arm within tolerance

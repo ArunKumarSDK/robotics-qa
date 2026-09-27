@@ -13,7 +13,7 @@ export class RobotController {
     this.modelName = modelName;
   }
 
-  async setJointPosition(jointName: 'shoulder_joint' | 'elbow_joint', positionRad: number): Promise<void> {
+  async setJointPosition(jointName: string, positionRad: number): Promise<void> {
     const topic = `/model/${this.modelName}/joint/${jointName}/cmd_pos`;
     const command = `gz topic -t "${topic}" -m gz.msgs.Double -p "data: ${positionRad}"`;
 
