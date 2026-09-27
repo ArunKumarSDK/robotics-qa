@@ -1,4 +1,3 @@
-```markdown
 # Robotics QA: Automated BDD Testing Framework for Gazebo Sim
 
 A high-fidelity Quality Assurance (QA) automation framework for industrial robotic manipulators running in **Gazebo Sim (gz-sim)**. Built with **TypeScript**, **Cucumber.js**, and **BDD (Behavior-Driven Development)** methodologies, this repository provides automated end-to-end integration testing for both 2-DOF planar arms and 6-DOF industrial articulated manipulators.
@@ -36,7 +35,6 @@ robotics-qa/
 │   └── robot_controller.ts    # Gazebo topic IPC interface & state parser
 ├── package.json
 └── README.md
-
 ```
 
 ---
