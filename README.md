@@ -1,5 +1,3 @@
-Save this content as `README.md` in your project root (`/Users/arun.kumar/Desktop/robotics-qa/README.md`):
-
 ```markdown
 # 2-DOF Robotic Arm Digital Twin Test Automation Framework
 
