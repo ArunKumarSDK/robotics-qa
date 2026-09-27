@@ -7,10 +7,12 @@
       <real_time_factor>1</real_time_factor>
     </physics>
 
+    <!-- World Plugins -->
     <plugin filename="gz-sim-physics-system" name="gz::sim::systems::Physics"/>
     <plugin filename="gz-sim-user-commands-system" name="gz::sim::systems::UserCommands"/>
     <plugin filename="gz-sim-scene-broadcaster-system" name="gz::sim::systems::SceneBroadcaster"/>
 
+    <!-- Scene Lighting -->
     <scene>
       <ambient>0.6 0.6 0.6 1</ambient>
       <background>0.85 0.9 0.95 1</background>
@@ -24,6 +26,7 @@
       <direction>-0.5 -0.5 -1</direction>
     </light>
 
+    <!-- Ground Plane -->
     <model name="ground">
       <static>true</static>
       <link name="ground_link">
@@ -32,7 +35,10 @@
         </collision>
         <visual name="visual">
           <geometry><plane><normal>0 0 1</normal><size>20 20</size></plane></geometry>
-          <material><ambient>0.7 0.7 0.7 1</ambient><diffuse>0.7 0.7 0.7 1</diffuse></material>
+          <material>
+            <ambient>0.7 0.7 0.7 1</ambient>
+            <diffuse>0.7 0.7 0.7 1</diffuse>
+          </material>
         </visual>
       </link>
     </model>
@@ -57,7 +63,10 @@
       <link name="base_link">
         <pose>0 0 0.1 0 0 0</pose>
         <inertial><mass>10</mass><inertia><ixx>0.1</ixx><iyy>0.1</iyy><izz>0.1</izz></inertia></inertial>
-        <visual name="visual"><geometry><cylinder><radius>0.2</radius><length>0.2</length></cylinder></geometry></visual>
+        <visual name="visual">
+          <geometry><cylinder><radius>0.2</radius><length>0.2</length></cylinder></geometry>
+          <material><ambient>0.3 0.3 0.3 1</ambient><diffuse>0.3 0.3 0.3 1</diffuse></material>
+        </visual>
       </link>
 
       <joint name="world_fixed" type="fixed"><parent>world</parent><child>base_link</child></joint>
@@ -65,7 +74,10 @@
       <link name="shoulder_link">
         <pose>0 0 0.4 0 0 0</pose>
         <inertial><mass>2</mass><inertia><ixx>0.02</ixx><iyy>0.02</iyy><izz>0.02</izz></inertia></inertial>
-        <visual name="visual"><geometry><box><size>0.1 0.1 0.4</size></box></geometry></visual>
+        <visual name="visual">
+          <geometry><box><size>0.1 0.1 0.4</size></box></geometry>
+          <material><ambient>0.1 0.5 0.8 1</ambient><diffuse>0.1 0.5 0.8 1</diffuse></material>
+        </visual>
       </link>
 
       <joint name="shoulder_joint" type="revolute">
@@ -76,7 +88,10 @@
       <link name="elbow_link">
         <pose>0 0 0.8 0 0 0</pose>
         <inertial><mass>1</mass><inertia><ixx>0.01</ixx><iyy>0.01</iyy><izz>0.01</izz></inertia></inertial>
-        <visual name="visual"><geometry><box><size>0.08 0.08 0.4</size></box></geometry></visual>
+        <visual name="visual">
+          <geometry><box><size>0.08 0.08 0.4</size></box></geometry>
+          <material><ambient>0.8 0.2 0.2 1</ambient><diffuse>0.8 0.2 0.2 1</diffuse></material>
+        </visual>
       </link>
 
       <joint name="elbow_joint" type="revolute">
@@ -121,18 +136,26 @@
         <topic>/model/robot_6dof/joint/joint_6/cmd_pos</topic>
       </plugin>
 
+      <!-- BASE LINK -->
       <link name="base">
         <pose>0 0 0.1 0 0 0</pose>
         <inertial><mass>15.0</mass><inertia><ixx>0.4</ixx><iyy>0.4</iyy><izz>0.4</izz></inertia></inertial>
-        <visual name="pedestal"><geometry><cylinder><radius>0.2</radius><length>0.2</length></cylinder></geometry></visual>
+        <visual name="pedestal">
+          <geometry><cylinder><radius>0.2</radius><length>0.2</length></cylinder></geometry>
+          <material><ambient>0.25 0.25 0.28 1</ambient><diffuse>0.25 0.25 0.28 1</diffuse></material>
+        </visual>
       </link>
 
       <joint name="world_fixed_joint" type="fixed"><parent>world</parent><child>base</child></joint>
 
+      <!-- LINK 1 -->
       <link name="link_1">
         <pose>0 0 0.28 0 0 0</pose>
         <inertial><mass>5.0</mass><inertia><ixx>0.08</ixx><iyy>0.08</iyy><izz>0.08</izz></inertia></inertial>
-        <visual name="visual"><geometry><cylinder><radius>0.16</radius><length>0.16</length></cylinder></geometry></visual>
+        <visual name="visual">
+          <geometry><cylinder><radius>0.16</radius><length>0.16</length></cylinder></geometry>
+          <material><ambient>0.2 0.2 0.2 1</ambient><diffuse>0.2 0.2 0.2 1</diffuse></material>
+        </visual>
       </link>
 
       <joint name="joint_1" type="revolute">
@@ -140,10 +163,19 @@
         <axis><xyz>0 0 1</xyz><limit><lower>-3.14</lower><upper>3.14</upper></limit><dynamics><damping>15</damping><friction>3</friction></dynamics></axis>
       </joint>
 
+      <!-- LINK 2 -->
       <link name="link_2">
         <pose>0 0.16 0.55 0 0 0</pose>
         <inertial><mass>4.5</mass><inertia><ixx>0.1</ixx><iyy>0.1</iyy><izz>0.03</izz></inertia></inertial>
-        <visual name="visual"><geometry><box><size>0.14 0.12 0.45</size></box></geometry></visual>
+        <visual name="j2_hub">
+          <pose>0 -0.08 -0.2 1.5708 0 0</pose>
+          <geometry><cylinder><radius>0.11</radius><length>0.18</length></cylinder></geometry>
+          <material><ambient>0.2 0.2 0.2 1</ambient><diffuse>0.2 0.2 0.2 1</diffuse></material>
+        </visual>
+        <visual name="upper_arm_body">
+          <geometry><box><size>0.14 0.12 0.45</size></box></geometry>
+          <material><ambient>0.95 0.6 0.05 1</ambient><diffuse>0.95 0.6 0.05 1</diffuse></material>
+        </visual>
       </link>
 
       <joint name="joint_2" type="revolute">
@@ -151,10 +183,19 @@
         <axis><xyz>0 1 0</xyz><limit><lower>-1.57</lower><upper>1.57</upper></limit><dynamics><damping>25</damping><friction>6</friction></dynamics></axis>
       </joint>
 
+      <!-- LINK 3 -->
       <link name="link_3">
         <pose>0 0.16 0.95 0 0 0</pose>
         <inertial><mass>2.8</mass><inertia><ixx>0.05</ixx><iyy>0.05</iyy><izz>0.01</izz></inertia></inertial>
-        <visual name="visual"><geometry><box><size>0.11 0.1 0.35</size></box></geometry></visual>
+        <visual name="j3_hub">
+          <pose>0 0 -0.18 1.5708 0 0</pose>
+          <geometry><cylinder><radius>0.09</radius><length>0.16</length></cylinder></geometry>
+          <material><ambient>0.2 0.2 0.2 1</ambient><diffuse>0.2 0.2 0.2 1</diffuse></material>
+        </visual>
+        <visual name="forearm_body">
+          <geometry><box><size>0.11 0.1 0.35</size></box></geometry>
+          <material><ambient>0.95 0.6 0.05 1</ambient><diffuse>0.95 0.6 0.05 1</diffuse></material>
+        </visual>
       </link>
 
       <joint name="joint_3" type="revolute">
@@ -162,10 +203,15 @@
         <axis><xyz>0 1 0</xyz><limit><lower>-2.0</lower><upper>2.0</upper></limit><dynamics><damping>18</damping><friction>4</friction></dynamics></axis>
       </joint>
 
+      <!-- LINK 4 -->
       <link name="link_4">
         <pose>0 0.28 1.15 0 0 0</pose>
         <inertial><mass>1.2</mass><inertia><ixx>0.01</ixx><iyy>0.01</iyy><izz>0.005</izz></inertia></inertial>
-        <visual name="visual"><geometry><cylinder><radius>0.065</radius><length>0.14</length></cylinder></geometry></visual>
+        <visual name="wrist_pitch_body">
+          <pose>0 0 0 1.5708 0 0</pose>
+          <geometry><cylinder><radius>0.065</radius><length>0.14</length></cylinder></geometry>
+          <material><ambient>0.25 0.25 0.28 1</ambient><diffuse>0.25 0.25 0.28 1</diffuse></material>
+        </visual>
       </link>
 
       <joint name="joint_4" type="revolute">
@@ -173,10 +219,14 @@
         <axis><xyz>0 1 0</xyz><limit><lower>-1.57</lower><upper>1.57</upper></limit><dynamics><damping>6</damping><friction>1.2</friction></dynamics></axis>
       </joint>
 
+      <!-- LINK 5 -->
       <link name="link_5">
         <pose>0 0.28 1.25 0 0 0</pose>
         <inertial><mass>0.6</mass><inertia><ixx>0.003</ixx><iyy>0.003</iyy><izz>0.002</izz></inertia></inertial>
-        <visual name="visual"><geometry><box><size>0.09 0.09 0.1</size></box></geometry></visual>
+        <visual name="wrist_roll_body">
+          <geometry><box><size>0.09 0.09 0.1</size></box></geometry>
+          <material><ambient>0.2 0.2 0.2 1</ambient><diffuse>0.2 0.2 0.2 1</diffuse></material>
+        </visual>
       </link>
 
       <joint name="joint_5" type="revolute">
@@ -184,10 +234,14 @@
         <axis><xyz>1 0 0</xyz><limit><lower>-3.14</lower><upper>3.14</upper></limit><dynamics><damping>4</damping><friction>0.8</friction></dynamics></axis>
       </joint>
 
+      <!-- LINK 6 -->
       <link name="link_6">
         <pose>0 0.28 1.33 0 0 0</pose>
         <inertial><mass>0.5</mass><inertia><ixx>0.01</ixx><iyy>0.01</iyy><izz>0.01</izz></inertia></inertial>
-        <visual name="visual"><geometry><cylinder><radius>0.055</radius><length>0.04</length></cylinder></geometry></visual>
+        <visual name="tool_flange">
+          <geometry><cylinder><radius>0.055</radius><length>0.04</length></cylinder></geometry>
+          <material><ambient>0.1 0.7 0.3 1</ambient><diffuse>0.1 0.7 0.3 1</diffuse></material>
+        </visual>
       </link>
 
       <joint name="joint_6" type="revolute">
