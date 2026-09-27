@@ -1,124 +1,153 @@
 ```markdown
-# 2-DOF Robotic Arm Digital Twin Test Automation Framework
+# Robotics QA: Automated BDD Testing Framework for Gazebo Sim
 
-An end-to-end BDD (Behavior-Driven Development) test automation framework for validating joint motion, PID controller convergence, and telemetry state parsing for a 2-DOF robotic arm in Gazebo Sim.
-
-Designed for testing digital twin simulations, robot arm motion control, and IPC-based telemetry streams using **TypeScript**, **Cucumber**, and **Gazebo Sim**.
+A high-fidelity Quality Assurance (QA) automation framework for industrial robotic manipulators running in **Gazebo Sim (gz-sim)**. Built with **TypeScript**, **Cucumber.js**, and **BDD (Behavior-Driven Development)** methodologies, this repository provides automated end-to-end integration testing for both 2-DOF planar arms and 6-DOF industrial articulated manipulators.
 
 ---
 
-## 🏗️ Architecture & Component Overview
+## 🛠️ Tech Stack & Key Technologies
+
+* **Simulation Engine:** Gazebo Sim (gz-sim v8+)
+* **Test Runner:** Cucumber.js with `tsx` for native TypeScript execution
+* **Language:** TypeScript / Node.js
+* **Assertions:** `expect`
+* **Automation & Lifecycle:** Bash automation supporting macOS multi-process architecture (`-s` server and `-g` GUI separation)
+* **Digital Twins:** SDF (Simulation Description Format) 1.9 models with realistic joint dynamics, gear damping, and tuned PID controllers
+
+---
+
+## 📁 Repository Structure
 
 ```text
-+-------------------------------------------------------------+
-|               BDD Layer (Cucumber / Gherkin)                |
-|  Given 2-DOF arm connected -> When command target -> Then   |
-+------------------------------+------------------------------+
-                               |
-                               v
-+-------------------------------------------------------------+
-|           Step Definitions (TypeScript ESM / tsx)           |
-|        Polling convergence loop & assertion tolerances       |
-+------------------------------+------------------------------+
-                               |
-                               v
-+-------------------------------------------------------------+
-|             TypeScript RobotController Class                |
-|    Commands: /model/test_robot/joint/{joint_name}/cmd_pos   |
-|    Telemetry: /world/robot_world/model/test_robot/joint_state
-+------------------------------+------------------------------+
-                               |
-                               v
-+-------------------------------------------------------------+
-|                 Gazebo Sim Digital Twin                     |
-|    2-DOF Revolute Arm, Fixed Base Anchor, ODE Physics Engine|
-+-------------------------------------------------------------+
+robotics-qa/
+├── features/
+│   ├── robot_arm.feature      # 2-DOF planar arm BDD test scenarios
+│   ├── robot_6dof.feature     # 6-DOF industrial arm BDD test scenarios
+│   └── steps/
+│       └── robot_steps.ts     # Unified Cucumber step definitions & polling engine
+├── scripts/
+│   └── run_all_tests.sh       # Lifecycle automation (server/GUI launch, health check, teardown)
+├── simulation/
+│   ├── robot.sdf              # Standalone 2-DOF model
+│   ├── robot_6dof.sdf         # Standalone 6-DOF industrial model
+│   └── combined_world.sdf     # Unified world housing both robots for parallel testing
+├── src/
+│   ├── index.ts               # CLI entry point
+│   └── robot_controller.ts    # Gazebo topic IPC interface & state parser
+├── package.json
+└── README.md
 
 ```
 
 ---
 
-## 🚀 Tech Stack
+## 🚀 Quick Start & Installation
 
-* **Language:** TypeScript (Node.js ESM, `tsx`)
-* **BDD Framework:** Cucumber JS (`@cucumber/cucumber`) + `expect`
-* **Simulation Engine:** Gazebo Sim (SDF 1.9, ODE Physics)
-* **Transport Protocols:** Gazebo Transport CLI / IPC Messaging
-* **Target Environment:** macOS / Linux
+### Prerequisites
 
----
+Ensure you have the following installed on your machine:
 
-## 🛠️ Prerequisites & Setup
+* **Node.js** (v18+)
+* **Gazebo Sim** (`gz sim`)
+* **Git**
 
-### 1. Requirements
-
-* **Node.js**: v18+
-* **Gazebo Sim**: Harmonic or Ionic (`gz sim`)
-* **TypeScript**: v5+
-
-### 2. Installation
-
-Clone the repository and install dependencies:
+### Installation
 
 ```bash
+# Clone repository
 git clone [https://github.com/ArunKumarSDK/robotics-qa.git](https://github.com/ArunKumarSDK/robotics-qa.git)
 cd robotics-qa
+
+# Install dependencies
 npm install
+
+# Make test automation script executable
+chmod +x scripts/run_all_tests.sh
 
 ```
 
 ---
 
-## 🚦 Running the Test Suite
+## 🧪 Running Automated Tests
 
-### Step 1: Launch Gazebo Digital Twin Server
+### 1. Run Everything in One Command (Recommended)
 
-In terminal window 1, start the unpaused Gazebo simulation server:
+To launch the simulation server, spin up the 3D GUI window, execute the full test suite for both arms, and clean up background processes automatically:
 
+```bash
+npm run test:all
+
+```
+
+---
+
+### 2. Manual / Modular Execution
+
+If you wish to run individual suites against active Gazebo instances manually:
+
+#### **Testing 2-DOF Planar Arm:**
+
+1. In Terminal 1, start the 2-DOF simulation:
 ```bash
 gz sim -s simulation/robot.sdf
 
 ```
 
-### Step 2: Execute Automated BDD Tests
 
-In terminal window 2, run the Cucumber test suite:
-
+2. In Terminal 2, execute the 2-DOF test suite:
 ```bash
 npm run test:bdd
 
 ```
 
----
 
-## 🧪 Test Scenarios & Convergence Mechanics
 
-The framework validates joint convergence against physical tolerances ($\epsilon \le 0.1\text{ rad}$) using a **closed-loop active polling mechanism** to prevent flaky tests caused by variable simulation time steps:
+#### **Testing 6-DOF Industrial Arm:**
 
-* **Scenario 1**: Single Joint Pose Execution (`shoulder_joint: 0.5 rad`, `elbow_joint: -0.8 rad`)
-* **Scenario 2**: Reverse Dynamic Sweep (`shoulder_joint: -1.0 rad`, `elbow_joint: 1.0 rad`)
-* **Scenario 3**: Home Pose Return (`shoulder_joint: 0.0 rad`, `elbow_joint: 0.0 rad`)
-
----
-
-## 📂 Project Structure
-
-```text
-robotics-qa/
-├── features/
-│   ├── robot_arm.feature        # Gherkin scenario specifications
-│   └── steps/
-│       └── robot_steps.ts       # Cucumber step definitions & convergence loop
-├── simulation/
-│   └── robot.sdf                # 2-DOF SDF robot model & world config
-├── src/
-│   ├── index.ts                 # Test script entrypoint
-│   └── robot_controller.ts      # TypeScript Gazebo IPC transport wrapper
-├── package.json
-└── tsconfig.json
+1. In Terminal 1, start the 6-DOF simulation:
+```bash
+gz sim -s simulation/robot_6dof.sdf
 
 ```
 
+
+2. In Terminal 2, execute the 6-DOF test suite:
+```bash
+npm run test:bdd:6dof
+
 ```
 
+
+
 ---
+
+## 🤖 Robot Models & Tuning Specs
+
+### 2-DOF Planar Manipulator (`test_robot`)
+
+* **Degrees of Freedom:** 2 (Shoulder, Elbow)
+* **Target Application:** Basic joint trajectory and closed-loop position accuracy testing.
+
+### 6-DOF Industrial Articulated Arm (`robot_6dof`)
+
+* **Degrees of Freedom:** 6 (Yaw, Shoulder Pitch, Elbow Pitch, Wrist Pitch, Wrist Roll, Tool Flange Yaw)
+* **Kinematics:** CAD-style industrial architecture featuring kinematic offsets, horizontal motor hub geometry, and distinct link coloring.
+* **Physics & Control Tuning:**
+* **Joint Gearbox Dynamics:** Integrated `<damping>` and `<friction>` attributes to replicate strain-wave/harmonic drive resistance.
+* **PID Effort Boundaries:** Configured with anti-windup bounds (`i_max`/`i_min`) and peak torque limits (`cmd_max`/`cmd_min`) to guarantee convergence ($\le 0.1\text{ rad}$) without overshoot.
+
+
+
+---
+
+## 🛠️ macOS Multi-Process Architecture
+
+On macOS, running Gazebo Sim server and GUI in a single terminal process can cause display rendering locks. The automated script (`scripts/run_all_tests.sh`) resolves this by:
+
+1. Spawning the headless physics server (`gz sim -s -r`) as a background job.
+2. Launching the GUI client (`gz sim -g`) attached to the running server.
+3. Polling Gazebo telemetry topics until `/joint_state` publishers are active.
+4. Executing Cucumber test scenarios.
+5. Invoking `trap` cleanup handlers to terminate background processes cleanly upon completion.
+
+```
